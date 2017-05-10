@@ -1,0 +1,14 @@
+instance-id: <HOST_NAME>
+local-hostname: <HOST_NAME>.<DOMAIN>
+
+network-interfaces: |
+  auto <ETH>
+  iface <ETH> inet static
+    address <IP>
+    network <NETWORK>
+    netmask <NETMASK>
+    broadcast <BROADCAST>
+    gateway <GATEWAY>
+    nameserver <DNS>
+
+

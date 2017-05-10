@@ -1,0 +1,23 @@
+#cloud-config
+
+# Enable ssh
+ssh_pwauth: True
+disable_root: false    
+
+# Add user
+users:
+  - name: user
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+
+# Set some passwords
+chpasswd:
+  list: |
+    user:shifters
+    root:shifters
+  expire: False
+
+# Restart network
+runcmd:
+  - service network restart
+
+final_message: "The system is up, after $UPTIME seconds"
