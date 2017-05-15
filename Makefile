@@ -5,11 +5,11 @@ IMAGE_URL := https://cloud.centos.org/centos/7/images/$(IMAGE).qcow2
 SIZE  := 50G
 VBOX_NET := vboxnet0
 
-RAM := 1024
+RAM := 2048
 ETH := enp0s3
-HOST_NAME := node-01
+HOST_NAME := ovidiu
 DOMAIN := shifters.com
-IP := 10.10.10.104
+IP := 10.10.10.115
 NETWORK := 10.10.10.0
 NETMASK := 255.255.255.0
 BROADCAST := 10.10.10.255 
@@ -46,14 +46,14 @@ cloud_init:	# Generates the cloud-init ISO
 		sed -i "s/<BROADCAST>/$(BROADCAST)/g" cloud-init/meta-data
 		sed -i "s/<DNS>/$(DNS)/g" cloud-init/meta-data
 		sed -i "s/<GATEWAY>/$(GATEWAY)/g" cloud-init/meta-data
-		genisoimage -output cloud-init/init.iso -volid cidata -joliet -rock cloud-init/user-data cloud-init/meta-data
+		genisoimage -output cloud-init/$(HOST_NAME).iso -volid cidata -joliet -rock cloud-init/user-data cloud-init/meta-data
 
 spawn:		# Creates and launches the VM
 		VBoxManage createvm --register --name $(HOST_NAME) --ostype RedHat_64
 		VBoxManage modifyvm $(HOST_NAME) --memory $(RAM)
 		VBoxManage storagectl $(HOST_NAME) --name "IDE Controller" --add ide
 		VBoxManage modifyvm $(HOST_NAME) --hda images/$(HOST_NAME).vdi
-		VBoxManage storageattach $(HOST_NAME) --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium cloud-init/init.iso
+		VBoxManage storageattach $(HOST_NAME) --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium cloud-init/$(HOST_NAME).iso
 		vboxmanage modifyvm $(HOST_NAME) --nic1 hostonly
 		vboxmanage modifyvm $(HOST_NAME) --nic1 hostonly --hostonlyadapter1 $(VBOX_NET)		
 		vboxmanage startvm $(HOST_NAME)
@@ -65,4 +65,4 @@ delete:		# Deletes the vm
 		vboxmanage unregistervm $(HOST_NAME) --delete
 
 clean:		# Deletes vdi and resized qcow2 image. Does not remove the qcow2.original image
-		rm -f *.vdi *.qcow2 cloud-init/user-data cloud-init/meta-data cloud-init/init.iso
+		rm -f *.vdi *.qcow2 cloud-init/user-data cloud-init/meta-data
