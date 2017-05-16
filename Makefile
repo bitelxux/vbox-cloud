@@ -7,7 +7,7 @@ VBOX_NET := vboxnet0
 
 RAM := 2048
 ETH := enp0s3
-HOST_NAME := master-yy
+HOST_NAME := master-zz
 DOMAIN := shifters.com
 IP := 10.10.10.115
 NETWORK := 10.10.10.0
