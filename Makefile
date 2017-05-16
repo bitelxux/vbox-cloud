@@ -28,6 +28,7 @@ $(IMAGE).qcow2.original:
 		mv $(IMAGE).qcow2 $(IMAGE).qcow2.original
 
 convert:	# Resizes and converts qcow2 image to virtualbox vdi
+		mkdir -p images
 		cp $(IMAGE).qcow2.original $(IMAGE).qcow2
 		qemu-img resize $(IMAGE).qcow2 $(SIZE) 
 		qemu-img convert -f qcow2 -O vdi $(IMAGE).qcow2 $(IMAGE).vdi
@@ -56,7 +57,7 @@ spawn:		# Creates and launches the VM
 		VBoxManage storageattach $(HOST_NAME) --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium cloud-init/$(HOST_NAME).iso
 		vboxmanage modifyvm $(HOST_NAME) --nic1 hostonly
 		vboxmanage modifyvm $(HOST_NAME) --nic1 hostonly --hostonlyadapter1 $(VBOX_NET)		
-		vboxmanage startvm $(HOST_NAME)
+		vboxmanage startvm $(HOST_NAME) --type headless
 
 stop:	 	# Stops the vm	
 		vboxmanage controlvm $(HOST_NAME) poweroff
